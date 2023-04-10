@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ComponentScan(basePackages = {"guru.springframework.jdbc.dao"})
-public class DaoIntegrationTest {
+public class AuthorDaoIntegrationTest {
 
     @Autowired
     AuthorDao authorDao;
