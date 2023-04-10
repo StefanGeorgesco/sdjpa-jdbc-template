@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -37,7 +37,7 @@ public class AuthorDaoIntegrationTest {
 
         authorDao.deleteAuthorById(saved.getId());
 
-        assertThrows(EmptyResultDataAccessException.class, () -> authorDao.getById(saved.getId()));
+        assertThrows(TransientDataAccessResourceException.class, () -> authorDao.getById(saved.getId()));
     }
 
     @Test
@@ -62,8 +62,6 @@ public class AuthorDaoIntegrationTest {
 
         Author saved = authorDao.saveNewAuthor(author);
 
-        System.out.println("New Id is: " + saved.getId());
-
         assertThat(saved).isNotNull();
         assertThat(saved.getId()).isGreaterThan(3L);
     }
@@ -84,5 +82,8 @@ public class AuthorDaoIntegrationTest {
         assertThat(author).isNotNull();
         assertThat(author.getFirstName()).isEqualTo("Craig");
         assertThat(author.getLastName()).isEqualTo("Walls");
+        assertThat(author.getBooks()).isNotNull();
+        assertThat(author.getBooks().size()).isEqualTo(3);
+        assertThat(author.getBooks().get(1).getTitle()).isEqualTo("Spring Boot in Action, 1st Edition");
     }
 }

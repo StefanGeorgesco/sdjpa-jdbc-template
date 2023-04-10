@@ -1,10 +1,12 @@
 package guru.springframework.jdbc.dao;
 
 import guru.springframework.jdbc.domain.Author;
+import guru.springframework.jdbc.domain.Book;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * Created by jt on 8/23/21.
@@ -16,7 +18,30 @@ public class AuthorMapper implements RowMapper<Author> {
         author.setId(rs.getLong("id"));
         author.setFirstName(rs.getString("first_name"));
         author.setLastName(rs.getString("last_name"));
+        author.setBooks(new ArrayList<>());
+
+        try {
+            if (rs.getString("isbn") != null) {
+                author.getBooks().add(mapBook(rs));
+
+                while (rs.next()) {
+                    author.getBooks().add(mapBook(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         return author;
+    }
+
+    private Book mapBook(ResultSet rs) throws SQLException {
+        Book book = new Book();
+        book.setId(rs.getLong(4));
+        book.setIsbn(rs.getString(6));
+        book.setPublisher(rs.getString(7));
+        book.setTitle(rs.getString(5));
+        book.setAuthorId(rs.getLong(1));
+        return book;
     }
 }
